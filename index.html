@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>秉昌 ❤️ 秋莉</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+    text-align: center;
+    font-family: Arial, sans-serif;
+    background: url('https://github.com/ben910712-web/love/blob/main/pngtree-pink-flowers-and-hearts-bokeh-background-romantic-valentines-day-picture-image_15755638.jpg?raw=true') no-repeat center center fixed;
+    background-size: cover; /* 讓背景拉滿整頁 */
+    overflow-x: hidden;
+    padding: 0 10px;
+    position: relative;
+}
+
+/* 基本文字風格 */
+h1 { font-size: 2.2rem; margin-top: 40px; }
+.heartbeat { animation: beat 1s infinite; color: #ff3366; }
+@keyframes beat {
+    0%{transform:scale(1);} 25%{transform:scale(1.25);} 50%{transform:scale(1);} 75%{transform:scale(1.25);} 100%{transform:scale(1);}
+}
+
+/* 漂浮元素 */
+.floating {
+    position: absolute;
+    pointer-events: none;
+    animation: floatUp 6s linear forwards;
+    user-select: none;
+}
+@keyframes floatUp { 0%{transform:translateY(0);opacity:1;}100%{transform:translateY(-700px);opacity:0;} }
+
+/* 心形框風格 */
+.heartBox{
+    display:inline-block; width:200px; height:80px; margin:10px;
+    border-radius:40px; background:linear-gradient(135deg,#ff6699,#ff3366);
+    color:white; font-weight:bold; font-size:1rem; line-height:80px;
+    cursor:pointer; transition:transform .3s,box-shadow .3s;
+}
+.heartBox:hover { transform:scale(1.05); box-shadow:0 0 15px rgba(255,0,100,0.6); }
+.heartBox span{
+    display:block; opacity:0; transition:opacity .5s; color:black;
+}
+.heartBox.show span{ opacity:1; }
+
+/* 其他按鈕 */
+button{ margin-top:15px; padding:10px 18px; font-size:16px; border:none;
+    border-radius:25px; background-color:#ff4d88; color:white; cursor:pointer;
+}
+button:hover{background-color:#ff1a66;}
+#secretBtn{opacity:0.6; position:fixed; bottom:20px; right:20px; z-index:1000;}
+#confession{display:none; margin-top:20px; font-size:1.6rem; color:#ff3366;}
+</style>
+</head>
+
+<body>
+
+<h1>秉昌 ❤️ 秋莉 <span class="heartbeat">❤️</span></h1>
+
+<div id="birthdays">
+  秉昌的生日：2002/07/12 🎉<br>
+  秋莉的生日：2005/08/23 🎉
+</div>
+
+<div id="ourDate">❤️2025/12/26❤️</div>
+
+<div class="heartBox" id="timeBox">我們在一起的時間
+  <span id="timeTogether">0 天 0 小時 0 分 0 秒</span>
+</div>
+<div class="heartBox" id="annivBox">距離下一個紀念日
+  <span id="nextAnniversaryCountdown">0 天</span>
+</div>
+
+<h3 id="monthsDays"></h3>
+<h3 id="count1000"></h3>
+
+<button id="musicBtn">🎵 播放 / 暫停 音樂</button>
+<button id="secretBtn">點我有驚喜 🎁</button>
+
+<div id="confession">
+  秋莉，我真的很愛你 ❤️ 永遠想和你在一起！
+</div>
+
+<audio id="bgMusic" loop>
+    <source src="just_the_way_you_are.mp3" type="audio/mp3">
+</audio>
+
+<script>
+// —————————————— 日期計算 ——————————————
+var startDate = new Date("2025-12-26");
+
+// 在一起時間
+function updateTimeTogether(){
+    var now = new Date(); var diff = now - startDate;
+    var d=Math.floor(diff/(1000*60*60*24));
+    var h=Math.floor((diff%(1000*60*60*24))/(1000*60*60));
+    var m=Math.floor((diff%(1000*60*60))/(1000*60));
+    var s=Math.floor((diff%(1000*60))/1000);
+    document.getElementById("timeTogether").textContent = d+" 天 "+h+" 小時 "+m+" 分 "+s+" 秒";
+
+    var months = (now.getFullYear()-startDate.getFullYear())*12 + (now.getMonth()-startDate.getMonth());
+    var tempDate=new Date(startDate);
+    tempDate.setMonth(startDate.getMonth()+months);
+    if(now<tempDate){ months--; tempDate.setMonth(tempDate.getMonth()-1); }
+    var days=Math.floor((now-tempDate)/(1000*60*60*24));
+    document.getElementById("monthsDays").textContent="等於 "+months+" 個月又 "+days+" 天 💕";
+}
+updateTimeTogether(); setInterval(updateTimeTogether,1000);
+
+// 下一個紀念日倒數（只顯示天數）
+function updateNextAnniversary(){
+    var today=new Date();
+    var nextAnniv=new Date(today.getFullYear(),today.getMonth(),26);
+    if(today.getDate()>=26){ nextAnniv.setMonth(nextAnniv.getMonth()+1); }
+    var diffDays=Math.ceil((nextAnniv-today)/(1000*60*60*24));
+    document.getElementById("nextAnniversaryCountdown").textContent=diffDays+" 天";
+}
+updateNextAnniversary(); setInterval(updateNextAnniversary,60000);
+
+// 1000天倒數
+function update1000(){
+    var today=new Date();
+    var day1000=new Date("2025-12-26"); day1000.setDate(day1000.getDate()+1000);
+    var daysTo1000=Math.ceil((day1000-today)/(1000*60*60*24));
+    document.getElementById("count1000").textContent="距離 1000 天紀念日還有 "+daysTo1000+" 天 🌟";
+}
+update1000(); setInterval(update1000,60000);
+
+// —————————————— 飄浮特效 ——————————————
+function makeHeart(){
+    let heart=document.createElement("div"); heart.className="floating";
+    heart.style.left=Math.random()*window.innerWidth+"px";
+    heart.style.fontSize=(15+Math.random()*25)+"px";
+    heart.style.color="rgba(255,0,100,"+Math.random()+")";
+    heart.innerHTML="❤️"; document.body.appendChild(heart);
+    setTimeout(()=>heart.remove(),6000);
+}
+setInterval(makeHeart,400);
+
+function makeFlower(){
+    let flower=document.createElement("div"); flower.className="floating";
+    flower.style.left=Math.random()*window.innerWidth+"px";
+    flower.style.fontSize=(15+Math.random()*20)+"px";
+    flower.innerHTML="🌼"; // 可改成茉莉花圖片
+    document.body.appendChild(flower);
+    setTimeout(()=>flower.remove(),6000);
+}
+setInterval(makeFlower,800);
+
+// 音樂控制
+var music=document.getElementById("bgMusic");
+var musicBtn=document.getElementById("musicBtn");
+musicBtn.addEventListener("click",function(){
+    if(music.paused){music.play(); this.innerHTML="🎵 暫停音樂";}
+    else{music.pause(); this.innerHTML="🎵 播放音樂";}
+});
+document.body.addEventListener("click",()=>{music.play().catch(()=>{});});
+
+// 隱藏告白
+document.getElementById("secretBtn").addEventListener("click",function(){
+    var c=document.getElementById("confession");
+    if(c.style.display==="none"){ c.style.display="block"; this.style.opacity="1"; }
+    else{ c.style.display="none"; this.style.opacity="0.6"; }
+});
+
+// 心形框點擊動畫
+function heartClickAnimation(box){
+    box.addEventListener("click",function(){
+        this.classList.toggle("show");
+        for(let i=0;i<10;i++){ makeHeart(); makeFlower(); }
+    });
+}
+heartClickAnimation(document.getElementById("timeBox"));
+heartClickAnimation(document.getElementById("annivBox"));
+</script>
+
+</body>
+</html>
